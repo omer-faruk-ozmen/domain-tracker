@@ -48,7 +48,6 @@ domain_state.json.bak
 Thumbs.db
 
 # Configuration (if you move to separate config files)
-config.py
 .env
 
 # Temporary files
