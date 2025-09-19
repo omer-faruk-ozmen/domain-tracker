@@ -24,7 +24,6 @@ LOGS_DIR = "logs"
 # Default domains to monitor (if state file doesn't exist)
 DEFAULT_DOMAINS = [
     "memurx.com",
-    "nesofty.com"
 ]
 
 # Logging Configuration

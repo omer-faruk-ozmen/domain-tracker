@@ -182,29 +182,37 @@ class StateManager:
             
             # Update basic info
             domain_info["last_checked"] = current_time
+            domain_info["status"] = new_status
             
-            # Check if status changed
+            # Special case: First time checking (unknown -> available/unavailable)
+            # Don't send notification for first check, just initialize
+            if previous_status == "unknown":
+                if is_available:
+                    domain_info["first_available_date"] = current_time
+                domain_info["last_status_change"] = current_time
+                domain_info["notification_sent"] = False
+                self.save_state(state)
+                return False  # No notification for initial state
+            
+            # Check if status changed from known state
             if previous_status != new_status:
-                domain_info["status"] = new_status
                 domain_info["last_status_change"] = current_time
                 
                 if is_available:
-                    # Domain became available
+                    # Domain became available from unavailable
                     domain_info["first_available_date"] = current_time
                     domain_info["notification_sent"] = False
                     self.save_state(state)
-                    return True  # Send notification
+                    return True  # Send notification for real status change
                 else:
                     # Domain became unavailable
                     domain_info["notification_sent"] = False
                     self.save_state(state)
                     return False
             else:
-                # Status didn't change
-                domain_info["status"] = new_status
-                
+                # Status didn't change and we've seen this domain before
                 if is_available and not domain_info["notification_sent"]:
-                    # Domain is available but we haven't sent notification yet
+                    # Domain is still available but we haven't sent notification yet
                     domain_info["notification_sent"] = True
                     self.save_state(state)
                     return True
