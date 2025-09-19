@@ -5,22 +5,11 @@ Utility Functions for Domain Tracker
 
 import logging
 import os
-import sys
 import aiohttp
 from datetime import datetime
 from typing import Optional
 
-# Add current directory to path for config import
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-try:
-    from config import TELEGRAM_BOT_TOKEN, LOGS_DIR, LOG_LEVEL, LOG_FORMAT
-except ImportError:
-    # Fallback if import fails
-    TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
-    LOGS_DIR = 'logs'
-    LOG_LEVEL = 'INFO'
-    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+from config import TELEGRAM_BOT_TOKEN, LOGS_DIR, LOG_LEVEL, LOG_FORMAT
 
 logger = logging.getLogger(__name__)
 

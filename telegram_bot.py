@@ -1,33 +1,19 @@
 #!/usr/bin/env python3
 """
 Telegram Bot Module
-
-Provides command interface for domain management via Telegram.
 """
 
 import asyncio
 import aiohttp
 import logging
-import sys
-import os
 from datetime import datetime
 from typing import Dict, List
 
-# Add current directory to path for imports - MUST BE BEFORE OTHER IMPORTS
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# Now import local modules
-try:
-    from config import (
-        TELEGRAM_BOT_TOKEN, TELEGRAM_AVAILABLE_CHAT_ID, TELEGRAM_UNAVAILABLE_CHAT_ID
-    )
-    from state_manager import state_manager
-    from utils import send_telegram_message, format_datetime_short, get_status_emoji, validate_domain
-except ImportError as e:
-    print(f"Import error in telegram_bot.py: {e}")
-    print(f"Current working directory: {os.getcwd()}")
-    print(f"Script directory: {os.path.dirname(os.path.abspath(__file__))}")
-    sys.exit(1)
+from config import (
+    TELEGRAM_BOT_TOKEN, TELEGRAM_AVAILABLE_CHAT_ID, TELEGRAM_UNAVAILABLE_CHAT_ID
+)
+from state_manager import state_manager
+from utils import send_telegram_message, format_datetime_short, get_status_emoji, validate_domain
 
 logger = logging.getLogger(__name__)
 

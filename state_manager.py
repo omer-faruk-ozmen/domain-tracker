@@ -1,28 +1,15 @@
 #!/usr/bin/env python3
 """
 State Manager for Domain Tracker
-
-Handles JSON-based state persistence for domain monitoring.
 """
 
 import json
 import os
 import logging
-import sys
 from datetime import datetime
 from typing import Dict, List
 
-# Add current directory to path for imports - MUST BE BEFORE OTHER IMPORTS
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# Now import local modules
-try:
-    from config import STATE_FILE, DEFAULT_DOMAINS
-except ImportError as e:
-    print(f"Import error in state_manager.py: {e}")
-    print(f"Current working directory: {os.getcwd()}")
-    print(f"Script directory: {os.path.dirname(os.path.abspath(__file__))}")
-    sys.exit(1)
+from config import STATE_FILE, DEFAULT_DOMAINS
 
 logger = logging.getLogger(__name__)
 
