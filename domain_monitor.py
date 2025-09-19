@@ -13,15 +13,23 @@ import os
 from datetime import datetime
 from typing import List
 
-# Add current directory to path for imports
+# Add current directory to path for imports - MUST BE BEFORE OTHER IMPORTS
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from config import (
-    RDAP_TIMEOUT, WHOIS_TIMEOUT, CHECK_INTERVAL, STATUS_REPORT_CYCLES,
-    TELEGRAM_AVAILABLE_CHAT_ID, TELEGRAM_UNAVAILABLE_CHAT_ID
-)
-from state_manager import state_manager
-from utils import send_telegram_message, format_datetime, get_status_emoji
+# Now import local modules
+try:
+    from config import (
+        RDAP_TIMEOUT, WHOIS_TIMEOUT, CHECK_INTERVAL, STATUS_REPORT_CYCLES,
+        TELEGRAM_AVAILABLE_CHAT_ID, TELEGRAM_UNAVAILABLE_CHAT_ID
+    )
+    from state_manager import state_manager
+    from utils import send_telegram_message, format_datetime, get_status_emoji
+except ImportError as e:
+    print(f"Import error in domain_monitor.py: {e}")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Script directory: {os.path.dirname(os.path.abspath(__file__))}")
+    print(f"Files in directory: {os.listdir('.')}")
+    sys.exit(1)
 
 logger = logging.getLogger(__name__)
 
