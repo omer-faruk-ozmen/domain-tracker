@@ -8,8 +8,13 @@ Handles domain availability checking and monitoring logic.
 import asyncio
 import asyncwhois
 import logging
+import sys
+import os
 from datetime import datetime
 from typing import List
+
+# Add current directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
     RDAP_TIMEOUT, WHOIS_TIMEOUT, CHECK_INTERVAL, STATUS_REPORT_CYCLES,

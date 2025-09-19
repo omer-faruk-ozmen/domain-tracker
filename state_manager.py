@@ -8,8 +8,12 @@ Handles JSON-based state persistence for domain monitoring.
 import json
 import os
 import logging
+import sys
 from datetime import datetime
 from typing import Dict, List
+
+# Add current directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import STATE_FILE, DEFAULT_DOMAINS
 

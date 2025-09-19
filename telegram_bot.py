@@ -8,8 +8,13 @@ Provides command interface for domain management via Telegram.
 import asyncio
 import aiohttp
 import logging
+import sys
+import os
 from datetime import datetime
 from typing import Dict, List
+
+# Add current directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
     TELEGRAM_BOT_TOKEN, TELEGRAM_AVAILABLE_CHAT_ID, TELEGRAM_UNAVAILABLE_CHAT_ID
