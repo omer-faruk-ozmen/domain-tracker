@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+myenv/
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+domain_tracker.log
+logs/
+
+# State files (contains domain tracking data)
+domain_state.json
+domain_state.json.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Configuration (if you move to separate config files)
+config.py
+.env
+
+# Temporary files
+*.tmp
+*.bak
