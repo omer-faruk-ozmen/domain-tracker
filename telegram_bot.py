@@ -132,13 +132,9 @@ class TelegramBot:
             
             for domain, info in domains.items():
                 status = info.get("status", "unknown")
-                last_checked = info.get("last_checked", "Never")
-                
-                last_checked_str = format_datetime_short(last_checked, "Never")
                 status_emoji = get_status_emoji(status)
                 
-                message += f"{status_emoji} <code>{domain}</code>\n"
-                message += f"   Status: {status} | Last: {last_checked_str}\n\n"
+                message += f"{status_emoji} <code>{domain}</code> ({status})\n"
             
             return message
             
@@ -151,15 +147,10 @@ class TelegramBot:
         try:
             stats = state_manager.get_domain_stats()
             
-            last_updated = format_datetime_short(stats["last_updated"], "Never")
-            
             message = "📊 <b>Domain Monitoring Status</b>\n\n"
             message += f"📋 Total domains: {stats['total']}\n"
             message += f"✅ Available: {stats['available']}\n"
-            message += f"⏳ Unavailable: {stats['unavailable']}\n"
-            message += f"❓ Unknown: {stats['unknown']}\n\n"
-            message += f"🔍 Total checks: {stats['total_checks']}\n"
-            message += f"🕐 Last updated: {last_updated}\n\n"
+            message += f"⏳ Monitoring: {stats['unavailable']}\n\n"
             message += "Use /list to see detailed domain status."
             
             return message
@@ -167,6 +158,57 @@ class TelegramBot:
         except Exception as e:
             logger.error(f"Error getting status: {e}")
             return f"❌ Error retrieving status: {str(e)}"
+    
+    def handle_logs_command(self) -> str:
+        """Show last 10 log entries."""
+        try:
+            from datetime import datetime
+            import os
+            
+            # Get today's log file
+            today = datetime.now().strftime("%Y-%m-%d")
+            log_file = f"logs/domain_tracker_{today}.log"
+            
+            if not os.path.exists(log_file):
+                return "� No log file found for today"
+            
+            # Read last 10 lines
+            with open(log_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            
+            # Get last 10 lines (or all if less than 10)
+            last_lines = lines[-10:] if len(lines) >= 10 else lines
+            
+            if not last_lines:
+                return "📝 Log file is empty"
+            
+            message = "� <b>Last 10 Log Entries:</b>\n\n"
+            for line in last_lines:
+                line = line.strip()
+                if line:
+                    # Format time and make it more readable
+                    if ' - ' in line:
+                        parts = line.split(' - ', 2)
+                        if len(parts) >= 3:
+                            timestamp = parts[0]
+                            level = parts[1]
+                            msg = parts[2]
+                            # Show only time (HH:MM:SS)
+                            if ',' in timestamp:
+                                time_part = timestamp.split(',')[0].split(' ')[-1]
+                                message += f"<code>{time_part}</code> {level}: {msg}\n"
+                            else:
+                                message += f"<code>{line}</code>\n"
+                        else:
+                            message += f"<code>{line}</code>\n"
+                    else:
+                        message += f"<code>{line}</code>\n"
+            
+            return message
+            
+        except Exception as e:
+            logger.error(f"Error reading logs: {e}")
+            return f"❌ Error reading log file: {e}"
     
     def handle_help_command(self) -> str:
         """Show available commands."""
@@ -180,6 +222,7 @@ class TelegramBot:
 <b>Information:</b>
 /list - Show all monitored domains  
 /status - Show monitoring statistics
+/logs - Show last 10 log entries
 /help - Show this help message
 
 <b>Examples:</b>
@@ -226,6 +269,9 @@ class TelegramBot:
                 
             elif command == "/status":
                 response = self.handle_status_command()
+                
+            elif command == "/logs":
+                response = self.handle_logs_command()
                 
             elif command == "/help":
                 response = self.handle_help_command()

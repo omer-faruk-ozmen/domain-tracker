@@ -121,7 +121,6 @@ class DomainMonitor:
     
     def __init__(self):
         self.checker = DomainChecker()
-        self.cycle_count = 0
     
     async def monitor_single_domain(self, domain: str) -> None:
         """Monitor a single domain and handle notifications."""
@@ -183,37 +182,31 @@ class DomainMonitor:
             
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            message = "📊 <b>Domain Monitoring Status Report</b>\n\n"
-            message += f"🔄 Cycle: #{self.cycle_count}\n"
-            message += f"⏰ Time: {current_time}\n"
+            message = "📊 <b>Domain Monitoring Status</b>\n\n"
+            message += f"⏰ {current_time}\n"
             message += f"📋 Total domains: {stats['total']}\n"
             message += f"✅ Available: {stats['available']}\n"
-            message += f"⏳ Unavailable: {stats['unavailable']}\n"
-            message += f"❓ Unknown: {stats['unknown']}\n"
-            message += f"🔍 Total checks: {stats['total_checks']}\n\n"
+            message += f"⏳ Monitoring: {stats['unavailable']}\n\n"
             
             if available_domains:
-                message += f"✅ <b>Available domains ({len(available_domains)}):</b>\n"
+                message += f"✅ <b>Available ({len(available_domains)}):</b>\n"
                 for domain, info in available_domains:
-                    first_available = format_datetime(info.get("first_available_date", ""))
-                    message += f"   • {domain} (since: {first_available})\n"
+                    message += f"   • {domain}\n"
                 message += "\n"
             
             if unavailable_domains:
-                message += f"⏳ <b>Still unavailable ({len(unavailable_domains)}):</b>\n"
+                message += f"⏳ <b>Monitoring ({len(unavailable_domains)}):</b>\n"
                 for domain, info in unavailable_domains[:10]:  # Limit to first 10
-                    last_checked = format_datetime(info.get("last_checked", ""), "Never")
-                    message += f"   • {domain} (checked: {last_checked})\n"
+                    message += f"   • {domain}\n"
                 
                 if len(unavailable_domains) > 10:
                     message += f"   ... and {len(unavailable_domains) - 10} more\n"
-                message += "\n"
             
-            message += f"🤖 Next report in {STATUS_REPORT_CYCLES} cycles"
+            message += "🤖 Next status report soon..."
             
             success = await send_telegram_message(message, TELEGRAM_UNAVAILABLE_CHAT_ID)
             if success:
-                logger.info(f"Status report sent (Cycle #{self.cycle_count})")
+                logger.info("Status report sent")
             else:
                 logger.error("Failed to send status report")
                 
@@ -225,23 +218,20 @@ class DomainMonitor:
         logger.info("Domain monitoring started")
         
         try:
+            report_counter = 0
             while True:
-                self.cycle_count += 1
-                
-                # Update state with current cycle count
-                state = state_manager.load_state()
-                state["total_checks"] = self.cycle_count
-                state_manager.save_state(state)
+                report_counter += 1
                 
                 # Monitor all domains
                 await self.monitor_all_domains()
                 
-                # Send status report every N cycles
-                if self.cycle_count % STATUS_REPORT_CYCLES == 0:
+                # Send status report every N checks
+                if report_counter >= STATUS_REPORT_CYCLES:
                     await self.send_status_report()
+                    report_counter = 0  # Reset counter
                 
-                # Wait before next cycle
-                logger.debug(f"Cycle {self.cycle_count} completed, waiting {CHECK_INTERVAL}s")
+                # Wait before next check
+                logger.debug(f"Domain check completed, waiting {CHECK_INTERVAL}s")
                 await asyncio.sleep(CHECK_INTERVAL)
                 
         except KeyboardInterrupt:

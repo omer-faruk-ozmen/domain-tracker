@@ -26,8 +26,7 @@ class StateManager:
         if not os.path.exists(self.state_file):
             initial_state = {
                 "domains": {},
-                "last_updated": None,
-                "total_checks": 0
+                "last_updated": None
             }
             
             # Initialize with default domains
@@ -57,7 +56,7 @@ class StateManager:
         except Exception as e:
             logger.error(f"Error loading state: {e}")
             # Return minimal state on error
-            return {"domains": {}, "last_updated": None, "total_checks": 0}
+            return {"domains": {}, "last_updated": None}
     
     def save_state(self, state: Dict) -> bool:
         """Save domain state to JSON file."""
@@ -234,7 +233,6 @@ class StateManager:
             "available": 0,
             "unavailable": 0,
             "unknown": 0,
-            "total_checks": state.get("total_checks", 0),
             "last_updated": state.get("last_updated", "Never")
         }
         
