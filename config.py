@@ -3,10 +3,16 @@
 Configuration Settings for Domain Tracker
 """
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 # Telegram Bot Configuration
-TELEGRAM_BOT_TOKEN = "8440365885:AAHzFhnDqnmviK1G3y5SYWKTT9kWPP4f3SM"
-TELEGRAM_AVAILABLE_CHAT_ID = "-1003070547606"  # Domain available notifications
-TELEGRAM_UNAVAILABLE_CHAT_ID = "-1002696377311"  # Status reports and bot commands
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
+TELEGRAM_AVAILABLE_CHAT_ID = os.getenv("TELEGRAM_AVAILABLE_CHAT_ID", "YOUR_AVAILABLE_CHAT_ID_HERE")  # Domain available notifications
+TELEGRAM_UNAVAILABLE_CHAT_ID = os.getenv("TELEGRAM_UNAVAILABLE_CHAT_ID", "YOUR_UNAVAILABLE_CHAT_ID_HERE")  # Status reports and bot commands
 
 # Monitoring Configuration
 CHECK_INTERVAL = 60  # seconds between domain checks
