@@ -1,0 +1,13 @@
+[Unit]
+Description=Domain Tracker Python Script
+After=network.target
+
+[Service]
+User=kamuilanlar_com
+WorkingDirectory=/home/kamuilanlar_com/domain-tracker
+ExecStart=/home/kamuilanlar_com/domain-tracker/venv/bin/python3 main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

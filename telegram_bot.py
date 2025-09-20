@@ -250,6 +250,10 @@ class TelegramBot:
             parts = text.split()
             command = parts[0].lower()
             
+            # Remove bot username from command if present (e.g., /logs@botname -> /logs)
+            if "@" in command:
+                command = command.split("@")[0]
+            
             response = ""
             
             if command == "/add" and len(parts) >= 2:
